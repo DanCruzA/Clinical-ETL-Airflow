@@ -7,10 +7,15 @@ Se construyó una arquitectura contenerizada utilizando **Docker**, donde **Apac
 
 ## 🏗️ Arquitectura de la Solución
 
-    A["Generador de Datos<br>(Script Python)"] -->|CSV Raw| B("Sistema de Archivos")
-    B --> C{"Apache Airflow<br>(Orquestador)"}
-    C -->|"Extract & Transform<br>Pandas"| D["Limpieza de Datos"]
-    D -->|Load| E[("PostgreSQL<br>Data Warehouse")]
+```mermaid
+graph LR
+    A["Generador de Datos<br/>(Script Python)"] -->|CSV Raw| B["Sistema de Archivos"]
+    B --> C{"Apache Airflow<br/>(Orquestador)"}
+    C -->|"Extract & Transform<br/>(Pandas)"| D["Limpieza y Normalización"]
+    D -->|Load| E["PostgreSQL<br/>Data Warehouse"]
+```
+
+Componentes clave
 
 . Fuente: Datos simulados de laboratorio (5,000 registros con ruido/errores intencionales).
 
