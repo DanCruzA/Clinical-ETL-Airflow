@@ -106,6 +106,7 @@ docker exec -it p3_postgres_dw psql -U data_engineer -d dw_clinica
 Una vez dentro (dw_clinica=#), se puede verificar la carga en el Data Warehouse:
 
 **¿Llegaron los 5000 registros?**
+
 ```sql
 -- Verificar corrección de valores negativos y conteo total
 SELECT count(*) FROM fact_resultados_lab;
@@ -114,6 +115,7 @@ SELECT count(*) FROM fact_resultados_lab;
 
 **¿Se arreglaron los valores negativos?**
 Recuerda que en el CSV había valores como -150. Aquí todos deberían ser positivos.
+
 ```sql
 SELECT count(*) FROM fact_resultados_lab WHERE resultado_valor < 0;
 -- (Debería decir: 0. ¡Si sale 0, tu limpieza funcionó!)
@@ -121,6 +123,7 @@ SELECT count(*) FROM fact_resultados_lab WHERE resultado_valor < 0;
 
 **¿Se llenaron los técnicos vacíos?**
 Recuerda que había nulos. El script debía ponerles "Sin Asignar".
+
 ```sql
 SELECT count(*) FROM fact_resultados_lab WHERE tecnico_responsable = 'Sin Asignar';
 -- (Debería salir un número mayor a 0, alrededor de 200-300)
