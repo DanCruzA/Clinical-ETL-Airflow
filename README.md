@@ -81,7 +81,7 @@ python3 generar_data.py
 ```
 
 ### 3️⃣Desplegar la Infraestructura:
-**El flag --build es importante para crear la imagen con Pandas**
+El flag --build es importante para crear la imagen con Pandas
 ```bash
 docker-compose up --build -d
 ```
