@@ -1,0 +1,11 @@
+# Ignorar logs de Airflow (son miles y pesan mucho)
+logs/
+plugins/
+__pycache__/
+*.pyc
+
+# Ignorar configuraciones locales de VS Code
+.vscode/
+
+# Opcional: Si quieres que generen su propia data, ignora el csv
+# data/

@@ -1,0 +1,80 @@
+version: '3.8'
+
+services:
+  # --- 1. TU DATA WAREHOUSE (POSTGRES) ---
+  postgres_dw:
+    image: postgres:16
+    container_name: p3_postgres_dw
+    restart: always
+    environment:
+      POSTGRES_USER: data_engineer
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: dw_clinica
+    ports:
+      - "5435:5432"
+    volumes:
+      - pg_dw_data:/var/lib/postgresql/data
+    networks:
+      - etl_network
+
+  # --- 2. AIRFLOW WEBSERVER ---
+  airflow-webserver:
+    build: .                        # <--- USA TU DOCKERFILE
+    container_name: p3_airflow_web
+    command: webserver
+    restart: always
+    ports:
+      - "8085:8080"
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@airflow-db/airflow
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - _AIRFLOW_DB_UPGRADE=true
+      - _AIRFLOW_WWW_USER_CREATE=true
+      - _AIRFLOW_WWW_USER_USERNAME=admin
+      - _AIRFLOW_WWW_USER_PASSWORD=admin
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./data:/opt/airflow/data
+      - ./logs:/opt/airflow/logs
+    networks:
+      - etl_network
+    depends_on:
+      - airflow-db
+      - postgres_dw
+
+  # --- 3. AIRFLOW SCHEDULER (El que ejecuta el código) ---
+  airflow-scheduler:
+    build: .                        # <--- USA TU DOCKERFILE
+    container_name: p3_airflow_scheduler
+    command: scheduler
+    restart: always
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@airflow-db/airflow
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./data:/opt/airflow/data
+      - ./logs:/opt/airflow/logs
+    networks:
+      - etl_network
+    depends_on:
+      - airflow-db
+
+  # --- 4. BASE DE DATOS INTERNA DE AIRFLOW ---
+  airflow-db:
+    image: postgres:15
+    container_name: p3_airflow_metadata
+    environment:
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+      - POSTGRES_DB=airflow
+    networks:
+      - etl_network
+
+volumes:
+  pg_dw_data:
+
+networks:
+  etl_network:
+    driver: bridge
