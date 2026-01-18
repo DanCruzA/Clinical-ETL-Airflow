@@ -64,8 +64,9 @@ Al mapear volúmenes locales (./logs, ./data) al contenedor, Airflow (UID 50000)
 Se aplicó una apertura de permisos recursiva en el entorno de desarrollo para permitir que el contenedor escribiera logs y archivos intermedios.
 
 **Comando de solución:**
-
+```bash
 sudo chmod -R 777 dags data logs
+```
 
 ## 🚀 Cómo Ejecutar el Proyecto
 
