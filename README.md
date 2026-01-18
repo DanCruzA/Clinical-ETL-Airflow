@@ -61,7 +61,7 @@ RUN pip install --no-cache-dir pandas sqlalchemy psycopg2-binary
 **Problema:**  
 Al mapear volúmenes locales (./logs, ./data) al contenedor, Airflow (UID 50000) no tenía permisos de escritura sobre las carpetas del host (usuario local), generando errores PermissionError: [Errno 13].
 
-**Solución:**
+**Solución:**  
 Se aplicó una apertura de permisos recursiva en el entorno de desarrollo para permitir que el contenedor escribiera logs y archivos intermedios.
 
 **Comando de solución:**
