@@ -96,9 +96,32 @@ docker-compose up --build -d
 - Activar el DAG etl_laboratorio_clinico.
 
 ## 📊 Verificación de Datos
-Una vez ejecutado el pipeline, se puede verificar la carga en el Data Warehouse:
+Ahora vamos a confirmar que los datos realmente viajaron del CSV a la Base de Datos y que se limpiaron.
+
+Ejecuta este comando en tu terminal para entrar a tu Data Warehouse y consultar la tabla:
+```bash
+docker exec -it p3_postgres_dw psql -U data_engineer -d dw_clinica
+```
+
+Una vez dentro (dw_clinica=#), se puede verificar la carga en el Data Warehouse:
+
+**¿Llegaron los 5000 registros?**
 ```sql
 -- Verificar corrección de valores negativos y conteo total
 SELECT count(*) FROM fact_resultados_lab;
 -- Resultado esperado: 5000
+```
+
+**¿Se arreglaron los valores negativos?**
+Recuerda que en el CSV había valores como -150. Aquí todos deberían ser positivos.
+```sql
+SELECT count(*) FROM fact_resultados_lab WHERE resultado_valor < 0;
+-- (Debería decir: 0. ¡Si sale 0, tu limpieza funcionó!)
+```
+
+**¿Se llenaron los técnicos vacíos?**
+Recuerda que había nulos. El script debía ponerles "Sin Asignar".
+```sql
+SELECT count(*) FROM fact_resultados_lab WHERE tecnico_responsable = 'Sin Asignar';
+-- (Debería salir un número mayor a 0, alrededor de 200-300)
 ```
