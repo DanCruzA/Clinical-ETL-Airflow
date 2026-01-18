@@ -113,14 +113,14 @@ SELECT count(*) FROM fact_resultados_lab;
 ```
 
 **¿Se arreglaron los valores negativos?**
-Recuerda que en el CSV había valores como -150. Aquí todos deberían ser positivos.
+  Recuerda que en el CSV había valores como -150. Aquí todos deberían ser positivos.
 ```sql
 SELECT count(*) FROM fact_resultados_lab WHERE resultado_valor < 0;
 -- (Debería decir: 0. ¡Si sale 0, tu limpieza funcionó!)
 ```
 
 **¿Se llenaron los técnicos vacíos?**
-Recuerda que había nulos. El script debía ponerles "Sin Asignar".
+  Recuerda que había nulos. El script debía ponerles "Sin Asignar".
 ```sql
 SELECT count(*) FROM fact_resultados_lab WHERE tecnico_responsable = 'Sin Asignar';
 -- (Debería salir un número mayor a 0, alrededor de 200-300)
