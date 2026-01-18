@@ -9,10 +9,10 @@ Se construyó una arquitectura contenerizada utilizando **Docker**, donde **Apac
 
 ```mermaid
 graph LR
-    A[Generador de Datos<br>Script Python] -->|CSV Raw| B(Sistema de Archivos)
-    B --> C{Apache Airflow<br>Orquestador}
-    C -->|Extract & Transform<br>Pandas| D[Limpieza de Datos]
-    D -->|Load| E[(PostgreSQL<br>Data Warehouse)]
+    A["Generador de Datos<br>(Script Python)"] -->|CSV Raw| B("Sistema de Archivos")
+    B --> C{"Apache Airflow<br>(Orquestador)"}
+    C -->|"Extract & Transform<br>Pandas"| D["Limpieza de Datos"]
+    D -->|Load| E[("PostgreSQL<br>Data Warehouse")]
 
 . Fuente: Datos simulados de laboratorio (5,000 registros con ruido/errores intencionales).
 
