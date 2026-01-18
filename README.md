@@ -59,8 +59,9 @@ RUN pip install --no-cache-dir pandas sqlalchemy psycopg2-binary
 
 ### 2️⃣ Conflictos de Permisos en Volúmenes (Linux)
 **Problema:**  
-Al mapear volúmenes locales (./logs, ./data) al contenedor, Airflow (UID 50000) no tenía permisos de escritura sobre las carpetas del host (usuario local), generando errores PermissionError: [Errno 13]. Solución: Se aplicó una apertura de permisos recursiva en el entorno de desarrollo para permitir que el contenedor escribiera los logs de ejecución.
+Al mapear volúmenes locales (./logs, ./data) al contenedor, Airflow (UID 50000) no tenía permisos de escritura sobre las carpetas del host (usuario local), generando errores PermissionError: [Errno 13].
 
+**Solución:**
 Se aplicó una apertura de permisos recursiva en el entorno de desarrollo para permitir que el contenedor escribiera logs y archivos intermedios.
 
 **Comando de solución:**
@@ -113,7 +114,7 @@ SELECT count(*) FROM fact_resultados_lab;
 -- Resultado esperado: 5000
 ```
 
-**¿Se arreglaron los valores negativos?**
+**¿Se arreglaron los valores negativos?**  
 Recuerda que en el CSV había valores como -150. Aquí todos deberían ser positivos.
 
 ```sql
@@ -121,7 +122,7 @@ SELECT count(*) FROM fact_resultados_lab WHERE resultado_valor < 0;
 -- (Debería decir: 0. ¡Si sale 0, tu limpieza funcionó!)
 ```
 
-**¿Se llenaron los técnicos vacíos?**
+**¿Se llenaron los técnicos vacíos?**  
 Recuerda que había nulos. El script debía ponerles "Sin Asignar".
 
 ```sql
