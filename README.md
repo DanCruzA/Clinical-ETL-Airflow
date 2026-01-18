@@ -14,73 +14,89 @@ graph LR
     C -->|"Extract & Transform<br/>(Pandas)"| D["Limpieza y Normalización"]
     D -->|Load| E["PostgreSQL<br/>Data Warehouse"]
 ```
+### 🔑 Componentes Clave
 
-Componentes clave
+- **Fuente de datos:**  
+  Datos simulados de laboratorio clínico (5,000 registros) con ruido y errores intencionales.
 
-. Fuente: Datos simulados de laboratorio (5,000 registros con ruido/errores intencionales).
+- **Transformación de datos:**  
+  - Normalización de valores negativos  
+  - Imputación de valores nulos  
+  - Tipado y validación de datos
 
-. Transformación: Normalización de valores negativos, imputación de nulos y tipado de datos.
+- **Infraestructura:**  
+  Despliegue mediante `docker-compose` con servicios aislados y reproducibles.
 
-. Infraestructura: Despliegue mediante docker-compose con servicios aislados.
+---
 
 ## 🛠️ Tecnologías Utilizadas
 
-. Docker & Docker Compose: Para la infraestructura como código (IaC).
+- **Docker & Docker Compose** – Infraestructura como Código (IaC)
+- **Apache Airflow 2.9** – Orquestación y calendarización de tareas
+- **Python 3.10** – Motor de procesamiento ETL  
+  - Pandas  
+  - SQLAlchemy
+- **PostgreSQL 16** – Base de datos destino (Data Warehouse)
+- **Linux (Pop!_OS)** – Entorno de desarrollo
 
-. Apache Airflow 2.9: Para la orquestación y calendarización de tareas.
-
-. Python 3.10 (Pandas/SQLAlchemy): Motor de procesamiento ETL.
-
-. PostgreSQL 16: Base de datos destino.
-
-. Linux (Pop!_OS): Entorno de desarrollo.
+---
 
 ## 🔧 Desafíos Técnicos y Soluciones (Troubleshooting)
-Durante la implementación de este pipeline en un entorno Linux estricto, se superaron los siguientes retos técnicos:
 
-1. Gestión de Dependencias en Contenedores (Custom Image)
-Problema: La imagen base de Airflow no incluye librerías de ciencia de datos (pandas, sqlalchemy), causando fallos en la ejecución de tareas (ModuleNotFoundError). Solución: En lugar de instalar librerías manualmente en tiempo de ejecución, se implementó una imagen personalizada mediante un Dockerfile para garantizar la reproducibilidad.
+### 1️⃣ Gestión de Dependencias en Contenedores (Custom Image)
 
-Código implementado (Dockerfile):
+**Problema:**  
+La imagen base de Apache Airflow no incluye librerías de ciencia de datos (`pandas`, `sqlalchemy`), lo que ocasionaba errores de ejecución como:
 
+**Código implementado (`Dockerfile`):**
+
+```dockerfile
 FROM apache/airflow:2.9.1
+
 # Instalación de dependencias al construir la imagen
 RUN pip install --no-cache-dir pandas sqlalchemy psycopg2-binary
+```
 
-2. Conflictos de Permisos en Volúmenes (Linux)
+### 2️⃣ Conflictos de Permisos en Volúmenes (Linux)
 Problema: Al mapear volúmenes locales (./logs, ./data) al contenedor, Airflow (UID 50000) no tenía permisos de escritura sobre las carpetas del host (usuario local), generando errores PermissionError: [Errno 13]. Solución: Se aplicó una apertura de permisos recursiva en el entorno de desarrollo para permitir que el contenedor escribiera los logs de ejecución.
 
-Comando de solución:
+Se aplicó una apertura de permisos recursiva en el entorno de desarrollo para permitir que el contenedor escribiera logs y archivos intermedios.
+
+**Comando de solución:**
 
 sudo chmod -R 777 dags data logs
 
-## 🚀 Cómo ejecutar este proyecto
+## 🚀 Cómo Ejecutar el Proyecto
 
-Clonar el repositorio:
-
-git clone [https://github.com/DanCruzA/Clinical-ETL-Airflow.git](https://github.com/DanCruzA/Clinical-ETL-Airflow.git)
+### 1️⃣ Clonar el Repositorio
+```bash
+git clone https://github.com/DanCruzA/Clinical-ETL-Airflow.git
 cd Clinical-ETL-Airflow
+```
 
-Generar la Data Simulada:
-
+### 2️⃣ Generar la Data Simulada:
+```bash
 python3 generar_data.py
+```
 
-Desplegar la Infraestructura:
-
+### 3️⃣Desplegar la Infraestructura:
 # El flag --build es importante para crear la imagen con Pandas
+```bash
 docker-compose up --build -d
+```
 
-Acceder a Airflow:
+### 4️⃣ Acceder a Airflow:
 
-. URL: http://localhost:8085
+- URL: http://localhost:8085
 
-. Credenciales: admin / admin
+- Credenciales: admin / admin
 
-. Activar el DAG etl_laboratorio_clinico.
+- Activar el DAG etl_laboratorio_clinico.
 
 ## 📊 Verificación de Datos
 Una vez ejecutado el pipeline, se puede verificar la carga en el Data Warehouse:
-
+```sql
 -- Verificar corrección de valores negativos y conteo total
 SELECT count(*) FROM fact_resultados_lab;
 -- Resultado esperado: 5000
+```
