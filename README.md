@@ -58,7 +58,8 @@ RUN pip install --no-cache-dir pandas sqlalchemy psycopg2-binary
 ```
 
 ### 2️⃣ Conflictos de Permisos en Volúmenes (Linux)
-Problema: Al mapear volúmenes locales (./logs, ./data) al contenedor, Airflow (UID 50000) no tenía permisos de escritura sobre las carpetas del host (usuario local), generando errores PermissionError: [Errno 13]. Solución: Se aplicó una apertura de permisos recursiva en el entorno de desarrollo para permitir que el contenedor escribiera los logs de ejecución.
+**Problema:**  
+Al mapear volúmenes locales (./logs, ./data) al contenedor, Airflow (UID 50000) no tenía permisos de escritura sobre las carpetas del host (usuario local), generando errores PermissionError: [Errno 13]. Solución: Se aplicó una apertura de permisos recursiva en el entorno de desarrollo para permitir que el contenedor escribiera los logs de ejecución.
 
 Se aplicó una apertura de permisos recursiva en el entorno de desarrollo para permitir que el contenedor escribiera logs y archivos intermedios.
 
@@ -80,7 +81,7 @@ python3 generar_data.py
 ```
 
 ### 3️⃣Desplegar la Infraestructura:
-# El flag --build es importante para crear la imagen con Pandas
+**El flag --build es importante para crear la imagen con Pandas**
 ```bash
 docker-compose up --build -d
 ```
